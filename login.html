@@ -165,9 +165,13 @@
 		}
 	</style>
 </head>
-
+<style>
+	[v-cloak] {
+        display: none !important;
+    }
+</style>
 <body>
-	<div id="app">
+	<div id="app" v-cloak>
 		<!-- 雪花背景 -->
 		<div class="snow-container"></div>
 		<!-- 登录控件 -->

@@ -38,4 +38,4 @@ function findClickingBar(params){
 //查询文章
 function findArticle(params){
     return axios.post("/vli/article/list", params);
-}
+};
