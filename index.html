@@ -123,15 +123,15 @@
 						<div class="wthree" v-for="v in articles" :key="v.id">
 							<div class="col-md-6 wthree-left wow fadeInDown" data-wow-duration=".8s" data-wow-delay=".2s">
 								<div class="tch-img">
-									<a href="singlepage.html"><img :src="v.homePic" class="img-responsive" alt=""></a>
+									<a :href="'singlepage.html?id='+v.id"><img :src="v.homePic" class="img-responsive" alt=""></a>
 								</div>
 							</div>
 							<div class="col-md-6 wthree-right wow fadeInDown" data-wow-duration=".8s" data-wow-delay=".2s">
-								<h3><a href="singlepage.html">{{v.title}}</a></h3>
-								<h6>BY <a href="singlepage.html">{{v.userName}}</a> {{v.createTime}}</h6>
+								<h3><a :href="'singlepage.html?id='+v.id">{{v.title}}</a></h3>
+								<h6>BY <a :href="'singlepage.html?id='+v.id">{{v.userName}}</a> {{v.createTime}}</h6>
 								<p>{{v.introduce}}</p>
 								<div class="bht1">
-									<a href="singlepage.html">点击查看</a>
+									<a :href="'singlepage.html?id='+v.id">点击查看</a>
 								</div>
 								<div class="soci">
 									<ul>
@@ -159,10 +159,10 @@
 							<h4>最近的帖子 </h4>
 							<div class="blog-grids wow fadeInDown" data-wow-duration=".8s" data-wow-delay=".2s" v-for="v in articles" :key="v.id">
 								<div class="blog-grid-left">
-									<a href="singlepage.html"><img :src="v.homePic" class="img-responsive" alt=""></a>
+									<a :href="'singlepage.html?id='+v.id"><img :src="v.homePic" class="img-responsive" alt=""></a>
 								</div>
 								<div class="blog-grid-right">
-									<h5><a href="singlepage.html">{{v.title}}</a> </h5>
+									<h5><a :href="'singlepage.html?id='+v.id">{{v.title}}</a> </h5>
 								</div>
 								<div class="clearfix"> </div>
 							</div>

@@ -25,11 +25,11 @@ axios.interceptors.request.use(function (config) {
 
 //登陆
 function login(params) {
-    return axios.post("/user/login", params);
+    return axios.post("/vli/user/login", params);
 };
 //注册接口
 function userRegister(params) {
-    return axios.post("/user/register", params);
+    return axios.post("/vli/user/register", params);
 };
 //查询点击栏
 function findClickingBar(params){
@@ -39,3 +39,15 @@ function findClickingBar(params){
 function findArticle(params){
     return axios.post("/vli/article/list", params);
 };
+//查询文章详情
+function findArticleById(params){
+    return axios.post("/vli/article/findArticleById",params);
+};
+//获取QQ用户信息
+function getQqInformation(params){
+    return axios.post("/vli/user/getQqInformation",params);
+};
+//提交评论
+function onSubComment(params){
+    return axios.post("/vli/comment/subComment",params);
+}
