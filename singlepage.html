@@ -82,8 +82,6 @@
                     </a>
                 </div>
             </div>
-
-
             <div class="tabbedPanels">
                 <ul class="tabs">
                     <li><a href="#" @click.prevent="onDetailsShow" :class="detailsClassShow">文章详情</a></li>
@@ -103,16 +101,20 @@
                     </div>
 
                     <div class="panel" id="panel02" v-show="evaluateShow">
-                        <p class="sell">评论</p>
-                        <p class="judge">全部评论(20)</p>
-
-                        <div class="judge01">
+                        <p class="sell">评论({{comments.total}})</p>
+                        <div class="judge01" v-for="item in comments.data" :key="item.id">
                             <div class="idimg"><img
                                     style="width: 50px; height: 50px; border-radius: 50%; overflow: hidden; "
-                                    src="https://q.qlogo.cn/headimg_dl?dst_uin=552431558&spec=100"></div>
+                                    :src="item.headPortrait"></div>
                             <div class="write">
-                                <p class="idname">落***1</p>
-                                <p>杯子很可爱！</p>
+                                <p class="idname">{{item.nickName}}</p>
+                                <p>{{item.createTime | formatDate}}</p>
+                                <p>{{item.content}}</p>
+                            </div>
+                        </div>
+                        <div class="judge01" v-show="comments.total==0 ? true : false">
+                            <div class="write">
+                                <p>暂时还没有人评论！</p>
                             </div>
                         </div>
                         <!-- 我要评论 -->
@@ -153,44 +155,17 @@
                     </div>
 
                     <div class="panel" id="panel03" v-show="recommendShow">
-                        <p class="sell">本店热卖商品</p>
+                        <p class="sell">其他文章</p>
                         <div class="com">
-                            <a href="#" class="ex01">
+                            <a href="#" class="ex01" v-for="item in otherArticles.data" :key="item.id">
                                 <figure>
-                                    <img src="https://api.w0ai1uo.org/api/fengjing" width="218" height="252">
-                                    <figcaption>木质花瓶</figcaption>
+                                    <img :src="item.homePic" width="218" height="252">
+                                    <figcaption>{{item.title}}</figcaption>
                                 </figure>
-                                <p>木质简约花瓶 亲近大自然</p>
-                                <div class="bottom"><samp>商城价:￥34元</samp><input type="button" style=" cursor:pointer;"
-                                        value="购买" /></div>
+                                <p>{{item.introduce}}</p>
+                                <div class="bottom"><samp>{{item.createTime}}</samp></div>
                             </a>
-                            <a href="#" class="ex01">
-                                <figure>
-                                    <img src="https://api.w0ai1uo.org/api/fengjing" width="218" height="252">
-                                    <figcaption>假花篮子</figcaption>
-                                </figure>
-                                <p>墙上假花优雅系列蓝色篮子</p>
-                                <div class="bottom"><samp>商城价:￥543元</samp><input type="button" style=" cursor:pointer;"
-                                        value="购买" /></div>
-                            </a>
-                            <a href="#" class="ex01">
-                                <figure>
-                                    <img src="https://api.w0ai1uo.org/api/fengjing" width="218" height="252">
-                                    <figcaption>富贵花瓶</figcaption>
-                                </figure>
-                                <p>白色带金色边创意富贵花瓶</p>
-                                <div class="bottom"><samp>商城价:￥888元</samp><input type="button" style=" cursor:pointer;"
-                                        value="购买" /></div>
-                            </a>
-                            <a href="#" class="ex01">
-                                <figure>
-                                    <img src="https://api.w0ai1uo.org/api/fengjing" width="218" height="252">
-                                    <figcaption>手工编织花篮</figcaption>
-                                </figure>
-                                <p>白色手工编织花篮 小巧简约/p>
-                                    <div class="bottom"><samp>商城价:￥68元</samp><input type="button"
-                                            style=" cursor:pointer;" value="购买" /></div>
-                            </a>
+                            <div v-show="otherArticles.total==0?true:false">暂时还没有文章！☺</div>
                         </div>
                         <div class="clear"></div>
                     </div>
@@ -262,7 +237,19 @@
             detailsClassShow: "active",
             evaluateClassShow: "",
             recommendClassShow: "",
-            articleDetails: {},
+            articleDetails: {
+                id: "",
+                createTime: "",
+                title: "",
+                introduce: "",
+                content: "",
+                userId: "",
+                userName: "",
+                viewNum: "",
+                typeId: "",
+                homePic: ""
+
+            },
             comment: {
                 articleId: "",
                 headPortrait: "",
@@ -272,6 +259,9 @@
                 content: ""
             },
             formShow: true,
+            comments: {},
+            otherArticles:[{}],
+
 
 
         },
@@ -285,6 +275,13 @@
                 _this.detailsClassShow = "active";
                 _this.evaluateClassShow = "";
                 _this.recommendClassShow = "";
+                //通过文章id查询文章详情
+                let id = getQueryString("id");
+                findArticleById({ "articleId": id }).then(res => {
+                    if (res.data.code == 1) {
+                        _this.articleDetails = res.data.data;
+                    }
+                })
             },
             //点击展示评论
             onEvaluateShow: function () {
@@ -295,6 +292,18 @@
                 _this.detailsClassShow = "";
                 _this.evaluateClassShow = "active";
                 _this.recommendClassShow = "";
+                //查询评论
+                let params = {
+                    "articleId": getQueryString("id")
+                }
+                getListComment(params).then(res => {
+                    console.info(res)
+                    if (res.data.code == 1) {
+                        _this.comments = res.data.data;
+                    } else {
+                        alert(res.data.msg);
+                    }
+                })
             },
             //点击展示推荐
             onRecommendShow: function () {
@@ -305,14 +314,18 @@
                 _this.detailsClassShow = "";
                 _this.evaluateClassShow = "";
                 _this.recommendClassShow = "active";
-            },
-            //通过文章id查询文章详情
-            findArticleById: function () {
-                let _this = this;
-                let id = getQueryString("id");
-                findArticleById({ "articleId": id }).then(res => {
-                    _this.articleDetails = res.data.data;
-                })
+                //查询用户其他文章
+                let params = {
+                    "userId": _this.articleDetails.userId,
+                    "articleId":_this.articleDetails.id,
+                }
+                getUserOtherArticle(params).then(res => {
+                    if(res.data.code==1){
+                        _this.otherArticles=res.data.data;
+                    }else{
+                        alert(res.data.msg);
+                    }
+                });
             },
             //获取QQ信息
             getQqInformation: function () {
@@ -336,15 +349,33 @@
                         _this.comment.content = "";
                         _this.formShow = false;
                         alert("评论成功！");
+                        _this.getListComment();
                     } else {
                         alert(res.data.msg);
                     }
                 });
-            }
+            },
         },
         created: function () {
             let _this = this;
-            _this.findArticleById();
+            _this.onDetailsShow();
+        },
+        filters: {
+            formatDate: function (value) {
+                let date = new Date(value);
+                let y = date.getFullYear();
+                let MM = date.getMonth() + 1;
+                MM = MM < 10 ? ('0' + MM) : MM;
+                let d = date.getDate();
+                d = d < 10 ? ('0' + d) : d;
+                let h = date.getHours();
+                h = h < 10 ? ('0' + h) : h;
+                let m = date.getMinutes();
+                m = m < 10 ? ('0' + m) : m;
+                let s = date.getSeconds();
+                s = s < 10 ? ('0' + s) : s;
+                return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s;
+            }
         }
     })
     //获取地址栏参数

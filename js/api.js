@@ -10,7 +10,7 @@ axios.defaults.headers['Content-Type'] = 'application/json'
 // 设置前置拦截器->以后所有的AJAX都会自动添加上 Authorization:token 的协议头
 axios.interceptors.request.use(function (config) {
     // 判断如果用户登录了就把 token 配置上 axios 的协议头中
-    let token = localStorage.getItem('token')
+    let token = sessionStorage.getItem('token')
     if (token) {
         config.headers['Authorization'] = token
     }
@@ -50,4 +50,12 @@ function getQqInformation(params){
 //提交评论
 function onSubComment(params){
     return axios.post("/vli/comment/subComment",params);
+};
+//查询评论
+function getListComment(params){
+    return axios.post("/vli/comment/getListComment",params);
+};
+//查询用户其他文章
+function getUserOtherArticle(params){
+    return axios.post("/vli/article/getUserOtherArticle",params);
 }

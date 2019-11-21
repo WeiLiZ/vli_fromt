@@ -429,8 +429,8 @@
 				login(_this.user).then(res => {
 					if (res.data.code == 1) {
 						var data = res.data.data;
-						localStorage.setItem("token", data.token);
-						localStorage.setItem("user", JSON.stringify(data.user));
+						sessionStorage.setItem("token", data.token);
+						sessionStorage.setItem("user", JSON.stringify(data.user));
 						alert(res.data.msg);
 						//清空表单
 						_this.user = {};
