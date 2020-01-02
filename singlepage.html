@@ -1,0 +1,389 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>详情页面</title>
+    <link href="css/shopdetail.css" rel="stylesheet" type="text/css">
+
+    <script src="js/jquery-1.9.1.min.js"></script>
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <!-----header部分------->
+        <div class="header">
+            <div class="top">
+                <div class="top1">
+                    <a href="login.html">登录-注册</a>
+                    <a href="#"><img src="images/top3.jpg">联系我们</a>
+                </div>
+            </div>
+            <!-----主导航部分------->
+            <!--<div class="bottom">
+                <div class="menu"><a href="#">全部商品分类</a></div>
+                <div class="nav">
+                    <a href="index.html" class="now">首页</a>
+                    <a href="tuangou.html">团购促销</a>
+                    <a href="mingshihuicui.html">名师荟萃</a>
+                    <a href="yipinyizhan.html">艺品驿站</a>
+                    <a href="western.html">欧式摆件</a>
+                </div>
+            </div> -->
+        </div>
+        <!-----header结束------->
+        <!-----商品详情部分------->
+        <div class="recommend">
+            <!-----右边------->
+            <div class="rightbox">
+                <p class="name">热读文章</p>
+                <img src="https://api.w0ai1uo.org/api/fengjing" width="130" height="180">
+                <p>￥58元</p>
+
+                <img src="https://api.w0ai1uo.org/api/fengjing" width="130" height="180">
+                <p>￥58元</p>
+
+
+                <img src="https://api.w0ai1uo.org/api/fengjing" width="130" height="180">
+                <p>￥58元</p>
+            </div>
+
+        </div>
+        <!-----商品详情部分结束------->
+        <!-----商品详情评价部分------->
+        <div class="evaluate">
+            <div class="classify">
+                <div class="shopsee">
+                    <p class="name">看了又看</p>
+                    <a href="#" class="ex01">
+                        <img src="https://api.w0ai1uo.org/api/fengjing" width="170" height="245">
+                        <p>木质简约衣架</p>
+                        <p>商城价:￥68元</p>
+                    </a>
+                    <a href="#" class="ex01">
+                        <img src="https://api.w0ai1uo.org/api/fengjing" width="170" height="245">
+                        <p>龙猫微观景观小夜灯</p>
+                        <p>商城价:￥258元</p>
+                    </a>
+                    <a href="#" class="ex01">
+                        <img src="https://api.w0ai1uo.org/api/fengjing" width="170" height="245">
+                        <p>火树银花灯</p>
+                        <p>商城价:￥858元</p>
+                    </a>
+                    <a href="#" class="ex01">
+                        <img src="https://api.w0ai1uo.org/api/fengjing" width="170" height="245">
+                        <p>火树银花灯</p>
+                        <p>商城价:￥858元</p>
+                    </a>
+                    <a href="#" class="ex01">
+                        <img src="https://api.w0ai1uo.org/api/fengjing" width="170" height="245">
+                        <p>火树银花灯</p>
+                        <p>商城价:￥858元</p>
+                    </a>
+                </div>
+            </div>
+            <div class="tabbedPanels">
+                <ul class="tabs">
+                    <li><a href="#" @click.prevent="onDetailsShow" :class="detailsClassShow">文章详情</a></li>
+                    <li><a href="#" @click.prevent="onEvaluateShow" :class="evaluateClassShow">累计评价</a></li>
+                    <li><a href="#" @click.prevent="onRecommendShow" :class="recommendClassShow">文章推荐</a></li>
+                </ul>
+
+                <div class="panelContainer">
+                    <div class="panel" v-show="detailsShow">
+                        <p class="sell" style="text-align:center;">{{articleDetails.title}}</p>
+                        <p style="text-align:center;">{{articleDetails.createTime}} 阅读量 {{articleDetails.viewNum}}</p>
+                        <p>{{articleDetails.introduce}}</p>
+                        <hr>
+                        <p></p>
+                        <span v-html="articleDetails.content">{{articleDetails.content}}</span>
+                        <div class="clear"></div>
+                    </div>
+
+                    <div class="panel" id="panel02" v-show="evaluateShow">
+                        <p class="sell">评论({{comments.total}})</p>
+                        <div class="judge01" v-for="item in comments.data" :key="item.id">
+                            <div class="idimg"><img
+                                    style="width: 50px; height: 50px; border-radius: 50%; overflow: hidden; "
+                                    :src="item.headPortrait"></div>
+                            <div class="write">
+                                <p class="idname">{{item.nickName}}</p>
+                                <p>{{item.createTime | formatDate}}</p>
+                                <p>{{item.content}}</p>
+                            </div>
+                        </div>
+                        <div class="judge01" v-show="comments.total==0 ? true : false">
+                            <div class="write">
+                                <p>暂时还没有人评论！</p>
+                            </div>
+                        </div>
+                        <!-- 我要评论 -->
+                        <div class="quiz">
+                            <h3>我要发言</h3>
+                            <div style="text-align: right;">
+                                <img style="width: 50px; height: 50px; border-radius: 50%; overflow: hidden; "
+                                    :src="comment.headPortrait" alt="">
+                            </div>
+                            <div class="quiz_content">
+                                <form action="" id="" method="post">
+                                    <div class="l_text">
+                                        <label class="m_flo">内 容：</label>
+                                        <textarea class="text" v-model="comment.content"></textarea>
+                                        <span class="tr">字数限制为5-200个</span>
+                                        <div v-show="formShow">
+                                            <label class="m_flo">QQ 号：</label>
+                                            <input type="text" placeholder="必填" v-model="comment.qqNumber"
+                                                @blur="getQqInformation">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <label>昵 称：</label>
+                                            <input type="text" placeholder="必填" v-model="comment.nickName">
+                                        </div>
+                                        <div>
+                                            <span v-show="formShow">
+                                                <label class="m_flo">邮 箱：</label>
+                                                <input type="text" placeholder="必填"
+                                                    v-model="comment.mail">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <label>注：(输入QQ号自动获取昵称、邮箱和头像！)</label>
+                                            </span>
+                                            <a href="#" style="padding-left: 640px; color: blue;"
+                                                @click.prevent="onSubComment">点击评论</a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+
+                    <div class="panel" id="panel03" v-show="recommendShow">
+                        <p class="sell">其他文章</p>
+                        <div class="com">
+                            <a href="#" class="ex01" v-for="item in otherArticles.data" :key="item.id">
+                                <figure>
+                                    <img :src="item.homePic" width="218" height="252">
+                                    <figcaption>{{item.title}}</figcaption>
+                                </figure>
+                                <p>{{item.introduce}}</p>
+                                <div class="bottom"><samp>{{item.createTime}}</samp></div>
+                            </a>
+                            <div v-show="otherArticles.total==0?true:false">暂时还没有文章！☺</div>
+                        </div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-----商品详情评价部结束分------->
+
+        <!----bottom_页脚部分----->
+        <div class="backf">
+            <div id="footer">
+                <ul>
+                    <li class="sy">支付方式</li>
+                    <li><a href="#">在线支付</a></li>
+                    <li><a href="#">货到付款</a></li>
+                    <li><a href="#">发票说明</a></li>
+                    <li><a href="#">余额宝</a></li>
+
+                </ul>
+                <ul>
+                    <li class="sy">购物指南</li>
+                    <li><a href="#">免费注册</a></li>
+                    <li><a href="#">申请会员</a></li>
+                    <li><a href="#">开通支付宝</a></li>
+                    <li><a href="#">支付宝充值</a></li>
+                </ul>
+                <ul>
+                    <li class="sy">商家服务</li>
+                    <li><a href="#">联系我们</a></li>
+                    <li><a href="#">客服服务</a></li>
+                    <li><a href="#">物流服务</a></li>
+                    <li><a href="#">缺货赔付</a></li>
+                </ul>
+                <ul>
+                    <li class="sy">关于我们</li>
+                    <li><a href="#">知识产权</a></li>
+                    <li><a href="#">网站合作</a></li>
+                    <li><a href="#">规则意见</a></li>
+                    <li><a href="#">帮助中心</a></li>
+                </ul>
+                <ul>
+                    <li class="sy">其他服务</li>
+                    <li><a href="#">诚聘英才</a></li>
+                    <li><a href="#">法律声明</a></li>
+
+                </ul>
+                <div class="clear"></div>
+            </div>
+            <div class="foot">
+                <p>使用本网站即表示接受 尚美衣店用户协议</p>
+                <p>版权所有——————————————————</p>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+<script src="js/vuejs-2.5.16.js"></script>
+<script src="js/axios-0.18.0.js"></script>
+<script src="js/api.js"></script>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            detailsShow: true,
+            evaluateShow: false,
+            recommendShow: false,
+            detailsClassShow: "active",
+            evaluateClassShow: "",
+            recommendClassShow: "",
+            articleDetails: {
+                id: "",
+                createTime: "",
+                title: "",
+                introduce: "",
+                content: "",
+                userId: "",
+                userName: "",
+                viewNum: "",
+                typeId: "",
+                homePic: ""
+
+            },
+            comment: {
+                articleId: "",
+                headPortrait: "",
+                qqNumber: "",
+                nickName: "",
+                mail: "",
+                content: ""
+            },
+            formShow: true,
+            comments: {},
+            otherArticles:[{}],
+
+
+
+        },
+        methods: {
+            //点击展示文章
+            onDetailsShow: function () {
+                let _this = this;
+                _this.detailsShow = true;
+                _this.evaluateShow = false;
+                _this.recommendShow = false;
+                _this.detailsClassShow = "active";
+                _this.evaluateClassShow = "";
+                _this.recommendClassShow = "";
+                //通过文章id查询文章详情
+                let id = getQueryString("id");
+                findArticleById({ "articleId": id }).then(res => {
+                    if (res.data.code == 1) {
+                        _this.articleDetails = res.data.data;
+                    }
+                })
+            },
+            //点击展示评论
+            onEvaluateShow: function () {
+                let _this = this;
+                _this.detailsShow = false;
+                _this.evaluateShow = true;
+                _this.recommendShow = false;
+                _this.detailsClassShow = "";
+                _this.evaluateClassShow = "active";
+                _this.recommendClassShow = "";
+                //查询评论
+                let params = {
+                    "articleId": getQueryString("id")
+                }
+                getListComment(params).then(res => {
+                    console.info(res)
+                    if (res.data.code == 1) {
+                        _this.comments = res.data.data;
+                    } else {
+                        alert(res.data.msg);
+                    }
+                })
+            },
+            //点击展示推荐
+            onRecommendShow: function () {
+                let _this = this;
+                _this.detailsShow = false;
+                _this.evaluateShow = false;
+                _this.recommendShow = true;
+                _this.detailsClassShow = "";
+                _this.evaluateClassShow = "";
+                _this.recommendClassShow = "active";
+                //查询用户其他文章
+                let params = {
+                    "userId": _this.articleDetails.userId,
+                    "articleId":_this.articleDetails.id,
+                }
+                getUserOtherArticle(params).then(res => {
+                    if(res.data.code==1){
+                        _this.otherArticles=res.data.data;
+                    }else{
+                        alert(res.data.msg);
+                    }
+                });
+            },
+            //获取QQ信息
+            getQqInformation: function () {
+                let _this = this;
+                let params = {
+                    qqNumber: _this.comment.qqNumber
+                }
+                getQqInformation(params).then(res => {
+                    console.info(res);
+                    if (res.data.code == 1) {
+                        _this.comment = res.data.data;
+                    }
+                });
+            },
+            //提交评论
+            onSubComment: function () {
+                let _this = this;
+                _this.comment.articleId = getQueryString("id");
+                onSubComment(_this.comment).then(res => {
+                    if (res.data.code == 1) {
+                        _this.comment.content = "";
+                        _this.formShow = false;
+                        alert("评论成功！");
+                        _this.getListComment();
+                    } else {
+                        alert(res.data.msg);
+                    }
+                });
+            },
+        },
+        created: function () {
+            let _this = this;
+            _this.onDetailsShow();
+        },
+        filters: {
+            formatDate: function (value) {
+                let date = new Date(value);
+                let y = date.getFullYear();
+                let MM = date.getMonth() + 1;
+                MM = MM < 10 ? ('0' + MM) : MM;
+                let d = date.getDate();
+                d = d < 10 ? ('0' + d) : d;
+                let h = date.getHours();
+                h = h < 10 ? ('0' + h) : h;
+                let m = date.getMinutes();
+                m = m < 10 ? ('0' + m) : m;
+                let s = date.getSeconds();
+                s = s < 10 ? ('0' + s) : s;
+                return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s;
+            }
+        }
+    })
+    //获取地址栏参数
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
+
+</script>
