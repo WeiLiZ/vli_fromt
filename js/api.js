@@ -3,7 +3,7 @@
 /* 所有ajax的代码写到这里 */
 axios.defaults.baseURL = 'http://localhost:5524/vli'
 // 设置AJAX超时时间
-axios.defaults.timeout = 3000
+axios.defaults.timeout = 0
 // 设置提交数据时的格式
 axios.defaults.headers['Content-Type'] = 'application/json'
 

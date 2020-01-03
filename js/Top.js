@@ -5,9 +5,9 @@ Vue.component("topnav", {
 			<div class="navbar navbar-fixed-top">
 				<div class="container cl">
 					<a class="navbar-logo hidden-xs" href="index.html">
-						<img class="logo" src="img/logo.png" alt="Lao王博客" />
+						<img class="logo" src="img/logo.png" alt="vli博客" />
 					</a>
-					<a class="logo navbar-logo-m visible-xs" href="index.html">Lao王博客</a>
+					<a class="logo navbar-logo-m visible-xs" href="index.html">vli博客</a>
 					<a aria-hidden="false" class="nav-toggle Hui-iconfont visible-xs" href="javascript:void(0);"
 						onclick="showSide();">&#xe667;</a>
 					<nav class="nav navbar-nav nav-collapse w_menu" role="navigation">
@@ -74,6 +74,7 @@ Vue.component("topnav", {
             };
 
         },
+        //退出
         logout: function () {
             this.status = true;
             sessionStorage.removeItem("user")

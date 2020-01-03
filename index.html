@@ -9,8 +9,8 @@
 	<meta name="viewport"
 		content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
 	<meta http-equiv="Cache-Control" content="no-siteapp" />
-	<meta name="keywords" content="vli">
-	<meta name="description" content="vli">
+	<meta name="keywords" content="vli博客">
+	<meta name="description" content="vli博客">
 	<LINK rel="Bookmark" href="favicon.ico">
 	<LINK rel="Shortcut Icon" href="favicon.ico" />
 	<link rel="stylesheet" type="text/css" href="plugin/h-ui/css/H-ui.min.css" />
@@ -39,19 +39,17 @@
 					<div class="slider">
 						<div class="bd">
 							<ul>
-								<li><a href="#" target="_blank"><img src="img/temp/banner1.jpg"></a></li>
-								<li><a href="#" target="_blank"><img src="img/temp/banner8.png"></a></li>
+								<li v-for="v in carousels"><a :href="'article_detail.html?id='+v.id"
+										target="_blank"><img :src="v.homePic"></a></li>
 							</ul>
 						</div>
 						<ol class="hd cl dots">
-							<li>1</li>
-							<li>2</li>
+							<li v-for="v in carousels">{{v.id}}</li>
 						</ol>
 						<a class="slider-arrow prev" href="javascript:void(0)"></a>
 						<a class="slider-arrow next" href="javascript:void(0)"></a>
 					</div>
 				</div>
-
 				<div class="mt-20 bg-fff box-shadow radius mb-5">
 					<div class="tab-category">
 						<a href=""><strong class="current">最新发布</strong></a>
@@ -59,7 +57,7 @@
 				</div>
 				<div class="art_content">
 					<ul class="index_arc">
-						<li class="index_arc_item" v-for="v in articles" :key="v.id">
+						<li class="index_arc_item" v-for="v in articles.data" :key="v.id">
 							<a href="#" class="pic">
 								<img class="lazyload" :src="v.homePic" data-original="temp/art.jpg" alt="应该选" />
 							</a>
@@ -93,15 +91,16 @@
 						</li> -->
 					</ul>
 					<div class="text-c mb-20" id="moreBlog">
-						<a class="btn  radius btn-block " href="javascript:;" onclick="moreBlog();">点击加载更多</a>
-						<a class="btn  radius btn-block hidden" href="javascript:;">加载中……</a>
+						<!-- <a class="btn  radius btn-block " href="javascript:;" @click="moreBlog()">点击加载更多</a>
+							<a class="btn  radius btn-block " href="javascript:;">加载中……</a> -->
+						<pagination :total="articles.total" :page_size="params.pageSize" @page_changed="pageChanged">
+						</pagination>
 					</div>
 				</div>
 			</div>
 
 			<!--right-->
 			<div class="col-sm-3 col-md-3">
-
 				<!--站点声明-->
 				<div class="panel panel-default mb-20">
 					<div class="panel-body">
@@ -109,9 +108,13 @@
 						<div class="slideTxtBox">
 							<div class="bd">
 								<ul>
-									<li><a href="javascript:void(0);">Lao博客测试版上线，欢迎访问</a></li>
-									<li><a href="javascript:void(0);">内容如有侵犯，请立即联系管理员删除</a></li>
-									<li><a href="javascript:void(0);">本站内容仅供学习和参阅，不做任何商业用途</a></li>
+									<li v-for="item in articles.data" :key="item.id"><a
+											href="javascript:void(0);">{{item.title}}</a></li>
+									<li><a href="javascript:void(0);">1</a></li>
+									<li><a href="javascript:void(0);"></a></li>
+									<li><a href="javascript:void(0);"></a></li>
+									<li><a href="javascript:void(0);"></a></li>
+									<li><a href="javascript:void(0);"></a></li>
 								</ul>
 							</div>
 						</div>
@@ -144,7 +147,8 @@
 						<ul class="index_recd">
 							<li v-for="item in popular" :key="item.id">
 								<a :href="'article_detail.html?id='+item.id">{{item.title}}</a>
-								<p class="hits"><i class="Hui-iconfont" title="点击量">&#xe622;</i>{{ item.commentNum}} </p>
+								<p class="hits"><i class="Hui-iconfont" title="点击量">&#xe622;</i>{{ item.commentNum}}
+								</p>
 							</li>
 						</ul>
 					</div>
@@ -267,6 +271,7 @@
 <script src="js/axios-0.18.0.js"></script>
 <script src="js/api.js"></script>
 <script src="js/Top.js"></script>
+<script src="js/Pagination-1.0.0.js"></script>
 <script type="text/javascript" src="plugin/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="plugin/layer/3.0/layer.js"></script>
 <script type="text/javascript" src="plugin/h-ui/js/H-ui.min.js"></script>
@@ -277,7 +282,7 @@
 	$(function () { $(window).on("scroll", backToTopFun); backToTopFun(); });
 	$(function () {
 		//幻灯片
-		jQuery(".slider_main .slider").slide({ mainCell: ".bd ul", titCell: ".hd li", trigger: "mouseover", effect: "leftLoop", autoPlay: true, delayTime: 700, interTime: 2000, pnLoop: true, titOnClassName: "active" })
+		// jQuery(".slider_main .slider").slide({ mainCell: ".bd ul", titCell: ".hd li", trigger: "mouseover", effect: "leftLoop", autoPlay: true, delayTime: 700, interTime: 2000, pnLoop: true, titOnClassName: "active" })
 		//tips
 		jQuery(".slideTxtBox").slide({ titCell: ".hd ul", mainCell: ".bd ul", autoPage: true, effect: "top", autoPlay: true });
 		//标签
@@ -295,23 +300,13 @@
 	new Vue({
 		el: "#app",
 		data: {
-			articles: [{
-				id: "",
-				createTime: "",
-				title: "",
-				introduce: "",
-				content: "",
-				userId: "",
-				userName: "",
-				viewNum: "",
-				commentNum: "",
-				typeId: "",
-				homePic: "",
-			}],
+			articles: [{}],
 			//热门推荐
 			popular: [{}],
 			//点击排行
 			clickrank: [{}],
+			//轮播图
+			carousels: [{}],
 			params: {
 				page: 1,
 				pageSize: 10,
@@ -327,22 +322,40 @@
 				//查询文章
 				findArticle(_this.params).then(res => {
 					if (res.data.code == 1) {
-						_this.articles = res.data.data.data;
+						_this.articles = res.data.data;
 					}
 				});
 				//查询热门推荐
-				findArticle({page:1,pageSize:5,map:{mode:1}}).then(res => {
+				findArticle({ page: 1, pageSize: 5, map: { mode: 1 } }).then(res => {
 					if (res.data.code == 1) {
 						_this.popular = res.data.data.data;
 					}
 				});
 				//查询点击排行
-				findArticle({page:1,pageSize:5,map:{mode:2}}).then(res => {
+				findArticle({ page: 1, pageSize: 5, map: { mode: 2 } }).then(res => {
 					if (res.data.code == 1) {
 						_this.clickrank = res.data.data.data;
 					}
-				})
+				});
+				//查询轮播图
+				findArticle({ page: 1, pageSize: 5, map: { mode: 3 } }).then(res => {
+					if (res.data.code == 1) {
+						_this.carousels = res.data.data.data;
+					}
+				});
 			},
+			// 分页条 翻页按钮
+			pageChanged: function (page) {
+				var _this = this;
+				// 更新当前的页数
+				_this.params.page = page;
+				//查询文章
+				findArticle(_this.params).then(res => {
+					if (res.data.code == 1) {
+						_this.articles = res.data.data;
+					}
+				});
+			}
 		},
 		created: function () {
 			var _this = this;
