@@ -116,7 +116,7 @@
                                         <input type="text" placeholder="必填" v-model="comment.nickName">
                                         <label class="m_flo">邮 箱：</label>
                                         <input type="text" placeholder="必填"
-                                            v-model="comment.mail">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            v-model="comment.mailbox">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
                                         <label>注：(输入QQ号自动获取昵称、邮箱和头像！)</label>
                                         <button @click.prevent="onSubComment" class="btn btn-primary radius">
@@ -195,7 +195,6 @@
 <script type="text/javascript" src="plugin/wangEditor/js/wangEditor.min.js"></script>
 <script type="text/javascript">
     $(function () { $(window).on("scroll", backToTopFun); backToTopFun(); });
-
 </script>
 
 <script>
@@ -221,27 +220,48 @@
                 headPortrait: "",
                 qqNumber: "",
                 nickName: "",
-                mail: "",
+                mailbox: "",
                 content: "",
-                createTime: ""
+                createTime: "",
+                userId:""
             },
             comments: [{}],
+            params: {
+                map: {
+                    "articleId": getQueryString("id")
+                }
+            },
+            user: {
+                id: "",
+                createTime: "",
+                deleteStatus: false,
+                userName: "",
+                phone: "",
+                sex: "",
+                age: "",
+                roleId: "",
+                healPortrait: "",
+                updateTime: "",
+            },
         },
         methods: {
             //点击展示文章
             onDetailsShow: function () {
                 let _this = this;
-                let params = {
-                    "articleId": getQueryString("id")
-                }
                 //通过文章id查询文章详情
-                findArticleById(params).then(res => {
+                findArticleById(_this.params).then(res => {
                     if (res.data.code == 1) {
                         _this.articleDetails = res.data.data;
                     }
                 })
                 //查询评论
-                getListComment(params).then(res => {
+                _this.getListComment();
+
+            },
+            //查询评论
+            getListComment: function () {
+                let _this = this;
+                getListComment(_this.params).then(res => {
                     if (res.data.code == 1) {
                         _this.comments = res.data.data;
                     } else {
@@ -256,9 +276,10 @@
                     qqNumber: _this.comment.qqNumber
                 }
                 getQqInformation(params).then(res => {
-                    console.info(res);
                     if (res.data.code == 1) {
+                        let content=_this.comment.content;
                         _this.comment = res.data.data;
+                        _this.comment.content=content;
                     }
                 });
             },
@@ -266,14 +287,12 @@
             onSubComment: function () {
                 let _this = this;
                 _this.comment.articleId = getQueryString("id");
+                _this.user = JSON.parse(sessionStorage.getItem("user"));
+                _this.comment.userId=_this.user.id;
                 onSubComment(_this.comment).then(res => {
                     if (res.data.code == 1) {
                         alert("评论成功！");
-                        getListComment({ "articleId": getQueryString("id") }).then(res => {
-                            if (res.data.code == 1) {
-                                _this.comments = res.data.data;
-                            }
-                        })
+                        _this.getListComment();
                         _this.comment = {};
                     } else {
                         alert(res.data.msg);

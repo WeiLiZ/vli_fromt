@@ -45,7 +45,7 @@ function findArticleById(params){
 };
 //获取QQ用户信息
 function getQqInformation(params){
-    return axios.post("/vli/user/getQqInformation",params);
+    return axios.post("/vli/common/user/getQqInformation",params);
 };
 //提交评论
 function onSubComment(params){

@@ -42,14 +42,14 @@ Vue.component("topnav", {
                 url: ""
             }],
             user: {
-                id: 9,
+                id: "",
                 createTime: "",
                 deleteStatus: false,
                 userName: "",
                 phone: "",
                 sex: "",
-                age: 0,
-                roleId: 0,
+                age: "",
+                roleId: "",
                 healPortrait: "",
                 updateTime: "",
             },
